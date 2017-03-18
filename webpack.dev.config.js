@@ -2,7 +2,13 @@ const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
-  entry: path.join(__dirname, 'src', 'client.js'),
+  entry: {
+    app : [
+      'webpack-dev-server/client?http://localhost:8080',
+      'webpack/hot/dev-server',
+      './src/client.js'
+    ]
+  },
   output: {
     path: path.join(__dirname, 'src', 'static', 'js'),
     publicPath: '/js',
@@ -13,7 +19,10 @@ module.exports = {
     inline: true,
     publicPath: '/js',
     contentBase: path.join(__dirname, 'src', 'static'),
-    historyApiFallback: true
+    historyApiFallback: true,
+    proxy: {
+      '**': 'http://localhost:8000'
+    }
   },
   module: {
     loaders: [{
@@ -28,15 +37,10 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('production')
+        'NODE_ENV': JSON.stringify('development')
       }
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: { warnings: false },
-      mangle: true,
-      sourceMap: false,
-      beautify: false
-    })
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin()
   ]
 };
