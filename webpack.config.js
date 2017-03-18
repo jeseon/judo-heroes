@@ -5,12 +5,14 @@ module.exports = {
   entry: path.join(__dirname, 'src', 'client.js'),
   output: {
     path: path.join(__dirname, 'src', 'static', 'js'),
-    filename: 'bundle.js'
+    publicPath: '/js',
+    filename: 'bundle.min.js'
   },
   devServer: {
-    inline: true,
     port: 8000,
-    contentBase: 'src/static'
+    inline: true,
+    contentBase: path.join(__dirname, 'src', 'static'),
+    historyApiFallback: true
   },
   module: {
     loaders: [{
@@ -24,7 +26,9 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
